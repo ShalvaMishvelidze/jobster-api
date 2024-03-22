@@ -1,5 +1,7 @@
 require("dotenv").config();
 require("express-async-errors");
+
+const path = require("path");
 const express = require("express");
 const app = express();
 const authRouter = require("./routes/auth");
@@ -15,6 +17,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 
+app.use(express.static(path.resolve(__dirname, "./client/build")));
 app.use(express.json());
 app.use(helmet());
 app.use(xss());
@@ -22,6 +25,10 @@ app.use(xss());
 // routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/jobs", authenticateUser, jobsRouter);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
 
 // error handlers
 app.use(notFoundMiddleware);
