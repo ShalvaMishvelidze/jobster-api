@@ -3,10 +3,19 @@ const router = express.Router();
 const authenticateUser = require("../middleware/authentication");
 const { register, login, updateUser } = require("../controllers/auth");
 const testUser = require("../middleware/testUser");
+const rateLimiter = require("express-rate-limit");
 
-router.post("/register", register);
+const apiLimiter = rateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: {
+    msg: "Too many requests from this IP, please try again after 15 minutes",
+  },
+});
 
-router.post("/login", login);
+router.post("/register", apiLimiter, register);
+
+router.post("/login", apiLimiter, login);
 
 router.patch("/updateUser", authenticateUser, testUser, updateUser);
 
