@@ -6,3 +6,11 @@ node_modules
 # env
 
 .env
+
+# temp 
+john.MD
+/john.MD
+Procfile
+/Procfile
+swagger.yaml
+/swagger.yaml
